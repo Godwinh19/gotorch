@@ -1,21 +1,25 @@
-package tensor
+package nn
 
 /*
 A tensor is a n-dimensional array 
 */ 
 
+import (
+	"gonum.org/v1/gonum/mat"
+)
+
 type Tensor struct {
-	data [][]float64
-	requires_grad bool
-	shape []float64
-	depends_on Dependency
+	Data mat.Dense
+	Requires_grad bool
+	Shape []int64
+	//depends_on Dependency
 }
 
 type Dependency struct {
-	tensor Tensor
+	Tensor Tensor
 	//grad_fn function	
 }
 
-func (d *Dependency) grad_fn() Tensor {
-	continue
+func (d *Dependency) grad_fn() {
+	//
 }
