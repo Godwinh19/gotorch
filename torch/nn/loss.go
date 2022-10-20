@@ -10,15 +10,15 @@ import (
 )
 
 type Loss struct {
-	predicted Tensor
-	actual Tensor
+	Predicted Tensor
+	Actual Tensor
 }
 
 func (l *Loss) MSELoss() float64 {
 	//numgo module for sum
-	return mat.Sum(math.Pow((l.predicted.data - l.actual.data), 2))
+	return mat.Sum(math.Pow((l.Predicted.data - l.Actual.data), 2))
 }
 
 func (l *Loss) MSEGrad() float64 {
-	return 2 * (l.predicted.data - l.actual.data)
+	return 2 * (l.Predicted.data - l.Actual.data)
 }
