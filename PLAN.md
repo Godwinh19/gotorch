@@ -1,0 +1,5 @@
+- Move tensors.go to a specific package directory (torch/tensor) where :
+    - we perform tensors operations, not supported by gonum
+    - make tensors compatible with neural networks
+- Create autograd package under torch directory
+- Make API for use of packages to construct networks
