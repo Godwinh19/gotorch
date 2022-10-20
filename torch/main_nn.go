@@ -15,7 +15,7 @@ func main() {
 	out := linear_2.Forward(one_forward)
 
 	fmt.Println(out.Shape())
-	fmt.Println("Value after one forward", out)
+	fmt.Println("Value after 2 forward", out)
 }
 
 //before test

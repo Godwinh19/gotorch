@@ -80,10 +80,17 @@ func (a *Activation) tanh(x t.Tensor) t.Tensor {
 }
 
 func (a *Activation) tanh_prime(x t.Tensor) t.Tensor {
-	y := a.tanh(x)
-	t.Pow(y, 2.)
+	y := t.Pow(a.tanh(x), 2.)
 	output := t.ScalarMinusTensor(y, 1.)
 	return output
+}
+
+func (a *Activation) Forward(inputs t.Tensor) t.Tensor {
+	return t.Tensor{}
+}
+
+func (a *Activation) Backward(inputs t.Tensor) t.Tensor {
+	return t.Tensor{}
 }
 
 // End Activation Layer

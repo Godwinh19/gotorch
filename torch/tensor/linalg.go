@@ -28,12 +28,10 @@ func DotScalar(a Tensor, scalar float64) Tensor {
 }
 
 func dot(a, b []float64) float64 {
-	la, lb := len(a), len(b)
+	la := len(a) //we assume a and b are same dimension
 	sum := 0.0
 	for i := 0; i < la; i++ {
-		for j := 0; j < lb; j++ {
-			sum += a[i] * b[j]
-		}
+		sum += a[i] * b[i]
 	}
 
 	return sum
