@@ -25,7 +25,7 @@ type Linear struct {
 	Inputs      Tensor
 }
 
-func (l *Layer) forward(inputs Tensor) outputs Tensor {
+func (l *Linear) forward(inputs Tensor) (outputs Tensor) {
 	/*
         outputs = inputs @ w + b
 	*/
@@ -43,10 +43,12 @@ func (l *Layer) forward(inputs Tensor) outputs Tensor {
 	l.LLayer.Params = params
 	l.Inputs = inputs
 	regression := mat.Dot(inputs.Data, params["w"].Data) + params["b"].Data
-	outputs := Tensor{Data: regression, Requires_grad: true, Shape: []int64{l.Input_size, l.Output_size},}
+	outputs := Tensor{Data: regression, Requires_grad: true, 
+		Shape: []int64{l.Input_size, l.Output_size}}
+	return 
 }
 
-func (l *Layer) backward(grad Tensor) gradients Tensor {
+func (l *Linear) backward(grad Tensor) (gradients Tensor) {
 	/*
 
 	if y = f(x) and x = a * b + c
@@ -67,6 +69,7 @@ func (l *Layer) backward(grad Tensor) gradients Tensor {
 	l.Grads = grads
 
 	gradients := mat.Dot(grad, l.LLayer.Params["w"].Data.T)
+	return
 }
 
 /*

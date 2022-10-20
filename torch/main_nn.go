@@ -10,3 +10,5 @@ func main() {
 	l := nn.Loss{}
 	fmt.Println("hello", t, l)
 }
+
+//before test
