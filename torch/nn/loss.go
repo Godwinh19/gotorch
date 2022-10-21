@@ -5,20 +5,19 @@ A loss function measure how good predictions are, it's used to adjust
 the parameters of our network
 */
 import (
-	"gonum.org/v1/gonum/mat"
-	"math"
+	t "gotorch/torch/tensor"
 )
 
 type Loss struct {
-	Predicted Tensor
-	Actual Tensor
+	Predicted t.Tensor
+	Actual    t.Tensor
 }
 
-func (l *Loss) MSELoss() float64 {
+func (l *Loss) MSELoss() t.Tensor {
 	//numgo module for sum
-	return mat.Sum(math.Pow((l.Predicted.data - l.Actual.data), 2))
+	return t.Sum([]t.Tensor{t.Pow(t.Sub(l.Predicted, l.Actual), 2.0)}...)
 }
 
-func (l *Loss) MSEGrad() float64 {
-	return 2 * (l.Predicted.data - l.Actual.data)
+func (l *Loss) MSEGrad() t.Tensor {
+	return t.DotScalar(t.Sub(l.Predicted, l.Actual), 2.)
 }

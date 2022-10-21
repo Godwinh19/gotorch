@@ -3,3 +3,4 @@
     - make tensors compatible with neural networks
 - Create autograd package under torch directory
 - Make API for use of packages to construct networks
+- Tensors broadcasting
