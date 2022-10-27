@@ -70,9 +70,10 @@ Start Activation Layer
 An activation layer just applies a function elementwise to its inputs
 */
 
-// Linear
+// Activation Linear
 type Activation struct {
 	LLayer Layer
+	Inputs t.Tensor
 }
 
 func (a *Activation) tanh(x t.Tensor) t.Tensor {
@@ -86,19 +87,12 @@ func (a *Activation) tanh_prime(x t.Tensor) t.Tensor {
 }
 
 func (a *Activation) Forward(inputs t.Tensor) t.Tensor {
-	return t.Tensor{}
+	a.Inputs = inputs
+	return a.tanh(inputs)
 }
 
-func (a *Activation) Backward(inputs t.Tensor) t.Tensor {
-	return t.Tensor{}
+func (a *Activation) Backward(grad t.Tensor) t.Tensor {
+	return t.Dot(a.tanh_prime(a.Inputs), grad)
 }
 
 // End Activation Layer
-
-type Forward interface {
-	forward()
-}
-
-type Backward interface {
-	backward()
-}
