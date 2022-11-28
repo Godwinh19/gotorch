@@ -19,10 +19,10 @@ func (t Tensor) Shape() []int {
 }
 
 func (t Tensor) Transpose() Tensor {
-	output := Zeros(t.Rows, t.Cols).Data
+	output := Zeros(t.Cols, t.Rows).Data
 
-	for i := 0; i < t.Rows; i++ {
-		for j := 0; j < t.Cols; j++ {
+	for i := 0; i < t.Cols; i++ {
+		for j := 0; j < t.Rows; j++ {
 			output[i][j] = t.Data[j][i]
 		}
 	}

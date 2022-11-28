@@ -44,7 +44,7 @@ func Sum(params ...Tensor) Tensor {
 		for i := 0; i < a.Cols; i++ {
 			sum += a.Data[0][i]
 		}
-		return Tensor{Data: [][]float64{{sum}}, Rows: a.Rows, Cols: a.Cols}
+		return Tensor{Data: [][]float64{{sum}}, Rows: 1, Cols: 1}
 	} else {
 		a, b := params[0], params[1]
 		output := Zeros(a.Rows, b.Cols)
@@ -86,6 +86,30 @@ func ScalarMinusTensor(a Tensor, scalar float64) Tensor {
 	for i := 0; i < a.Rows; i++ {
 		for j := 0; j < a.Cols; j++ {
 			output.Data[i][j] = scalar - a.Data[i][j]
+		}
+	}
+	return output
+}
+
+func TensorOpsTensor(a Tensor, b Tensor, ops string) Tensor {
+	err := a.SameTensorShape(b)
+	if err != nil {
+		panic(err.Error())
+	}
+	output := Zeros(a.Rows, a.Cols)
+	for i := 0; i < a.Rows; i++ {
+		for j := 0; j < a.Cols; j++ {
+			if ops == "minus" || ops == "-" {
+				output.Data[i][j] = a.Data[i][j] - b.Data[i][j]
+			} else if ops == "plus" || ops == "+" {
+				output.Data[i][j] = a.Data[i][j] + b.Data[i][j]
+			} else if ops == "mul" || ops == "*" {
+				output.Data[i][j] = a.Data[i][j] * b.Data[i][j]
+			} else if ops == "div" || ops == "/" {
+				output.Data[i][j] = a.Data[i][j] / b.Data[i][j]
+			} else {
+				panic("Error operations")
+			}
 		}
 	}
 	return output

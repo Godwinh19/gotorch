@@ -1,9 +1,11 @@
 package nn
 
-import t "gotorch/torch/tensor"
+import (
+	t "gotorch/torch/tensor"
+)
 
 type NeuralNet struct {
-	NLinear []Linear
+	NLinear []*Linear
 }
 
 func (net *NeuralNet) Forward(inputs t.Tensor) t.Tensor {
@@ -14,9 +16,10 @@ func (net *NeuralNet) Forward(inputs t.Tensor) t.Tensor {
 }
 
 func (net *NeuralNet) Backward(grad t.Tensor) t.Tensor {
-	var currentLayer Linear
+	//var currentLayer Linear
 	for index := range net.NLinear {
-		currentLayer = net.NLinear[len(net.NLinear)-index] // backward on reversed layers
+		index++
+		currentLayer := net.NLinear[len(net.NLinear)-index] // backward on reversed layers
 		grad = currentLayer.Backward(grad)
 	}
 
