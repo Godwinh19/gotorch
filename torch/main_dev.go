@@ -42,7 +42,10 @@ func main() {
 
 			// Adjust learning weights
 			optim.Step(net)
-			fmt.Println(currentLoss)
+			
+			if i%5 == 0 {
+				fmt.Println(currentLoss)
+			}
 		}
 	}
 	// Next add activation for each forward operation
