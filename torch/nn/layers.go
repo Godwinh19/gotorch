@@ -22,6 +22,7 @@ type Linear struct {
 	InputSize  int64
 	OutputSize int64
 	LLayer     Layer
+	Activation Activation
 	Inputs     t.Tensor // should we track each data for layer or make optional ?
 }
 
@@ -29,8 +30,8 @@ func (l *Linear) InitializeParameters() {
 	params := make(map[string]t.Tensor)
 	params["w"] = t.Rand(int(l.InputSize), int(l.OutputSize))
 
-	params["b"] = t.Zeros(1, 1)
-	//params["b"] = t.Zeros(1, int(l.OutputSize))
+	//params["b"] = t.Zeros(1, 1)
+	params["b"] = t.Zeros(1, int(l.OutputSize))
 	l.LLayer.Params = params
 }
 
@@ -44,7 +45,7 @@ func (l *Linear) Forward(inputs t.Tensor) (outputs t.Tensor) {
 	params := l.LLayer.Params
 		
 	l.Inputs = inputs
-	outputs = t.AddScalar(t.Dot(inputs, params["w"]), params["b"].Data[0][0])
+	outputs = t.Sum(t.Dot(inputs, params["w"]), params["b"])
 	return
 }
 
@@ -68,8 +69,6 @@ func (l *Linear) Backward(grad t.Tensor) (gradients t.Tensor) {
 	grads["w"] = t.Dot(l.Inputs.Transpose(), grad)
 	l.LLayer.Grads = grads
 
-	//fmt.Printf("%v, %v", grad.Shape(), l.LLayer.Params["w"])
-
 	gradients = t.Dot(grad, l.LLayer.Params["w"].Transpose())
 	return
 }
@@ -81,27 +80,39 @@ An activation layer just applies a function elementwise to its inputs
 
 // Activation Linear
 type Activation struct {
-	LLayer Layer
+	Name string
 	Inputs t.Tensor
+	forwardValue t.Tensor
 }
 
 func (a *Activation) tanh(x t.Tensor) t.Tensor {
-	return t.Tanh(x)
+	activationValue := t.Tanh(x)
+	a.forwardValue = activationValue
+	return activationValue
 }
 
 func (a *Activation) tanh_prime(x t.Tensor) t.Tensor {
-	y := t.Pow(a.tanh(x), 2.)
+	y := t.Pow(a.forwardValue, 2.)
 	output := t.ScalarMinusTensor(y, 1.)
 	return output
 }
 
 func (a *Activation) Forward(inputs t.Tensor) t.Tensor {
 	a.Inputs = inputs
-	return a.tanh(inputs)
+	// Currently work with only tanh
+	if a.Name == "tanh" {
+		return a.tanh(inputs)
+	} else {
+		panic("Activation function not implemented")
+	}
 }
 
 func (a *Activation) Backward(grad t.Tensor) t.Tensor {
-	return t.Dot(a.tanh_prime(a.Inputs), grad)
+	if a.Name == "tanh" {
+		return t.TensorOpsTensor(a.tanh_prime(a.Inputs), grad, "*")
+	} else {
+		panic("Activation function not implemented")
+	}
 }
 
 // End Activation Layer

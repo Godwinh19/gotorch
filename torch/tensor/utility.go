@@ -20,7 +20,7 @@ func (t Tensor) SameTensorShape(tb Tensor) error {
 	st := t.Shape()
 	stb := tb.Shape()
 
-	if (st[0] != stb[0]) && (st[1] != stb[1]) {
+	if (st[0] != stb[0]) || (st[1] != stb[1]) {
 		return errors.New("Matrix haven't same dimension")
 	}
 	return nil

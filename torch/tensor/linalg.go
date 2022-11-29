@@ -1,6 +1,9 @@
 package tensor
 
-import "math"
+import (
+	"fmt"
+	"math"
+)
 
 func Dot(a, b Tensor) Tensor {
 	err := a.SameTensorRowColShape(b)
@@ -45,8 +48,8 @@ func Sum(params ...Tensor) Tensor {
 			sum += a.Data[0][i]
 		}
 		return Tensor{Data: [][]float64{{sum}}, Rows: 1, Cols: 1}
-	} else {
-		a, b := params[0], params[1]
+	} else if len(params) == 2 {
+		a, b := params[0], params[1] // the second parameter is used for broadcasting
 		output := Zeros(a.Rows, b.Cols)
 		for i := 0; i < a.Rows; i++ {
 			for j := 0; j < b.Cols; j++ {
@@ -54,6 +57,9 @@ func Sum(params ...Tensor) Tensor {
 			}
 		}
 		return output
+	} else {
+		fmt.Errorf("Dimensional operation not supported")
+		return Tensor{}
 	}
 }
 
@@ -94,25 +100,49 @@ func ScalarMinusTensor(a Tensor, scalar float64) Tensor {
 func TensorOpsTensor(a Tensor, b Tensor, ops string) Tensor {
 	err := a.SameTensorShape(b)
 	if err != nil {
-		panic(err.Error())
+		return TensorOpsTensorWithBroadcasting(a, b, ops)
 	}
 	output := Zeros(a.Rows, a.Cols)
 	for i := 0; i < a.Rows; i++ {
 		for j := 0; j < a.Cols; j++ {
-			if ops == "minus" || ops == "-" {
-				output.Data[i][j] = a.Data[i][j] - b.Data[i][j]
-			} else if ops == "plus" || ops == "+" {
-				output.Data[i][j] = a.Data[i][j] + b.Data[i][j]
-			} else if ops == "mul" || ops == "*" {
-				output.Data[i][j] = a.Data[i][j] * b.Data[i][j]
-			} else if ops == "div" || ops == "/" {
-				output.Data[i][j] = a.Data[i][j] / b.Data[i][j]
-			} else {
-				panic("Error operations")
-			}
+			output.Data[i][j] = linearOperation(a.Data[i][j], b.Data[i][j], ops)
 		}
 	}
 	return output
+}
+
+func TensorOpsTensorWithBroadcasting(a Tensor, b Tensor, ops string) Tensor {
+	output := Zeros(a.Rows, a.Cols)
+	for i := 0; i < a.Rows; i++ {
+		for j := 0; j < a.Cols; j++ {
+			output.Data[i][j] = linearOperation(a.Data[i][j], b.Data[0][j], ops)
+		}
+	}
+	return output
+}
+
+func TensorOpsScalar(a Tensor, b float64, ops string) Tensor {
+	output := Zeros(a.Rows, a.Cols)
+	for i := 0; i < a.Rows; i++ {
+		for j := 0; j < a.Cols; j++ {
+			output.Data[i][j] = linearOperation(a.Data[i][j], b, ops)
+		}
+	}
+	return output
+}
+
+func linearOperation(a float64, b float64, ops string) float64 {
+	if ops == "minus" || ops == "-" {
+		return a - b
+	} else if ops == "plus" || ops == "+" {
+		return a - b
+	} else if ops == "mul" || ops == "*" {
+		return a - b
+	} else if ops == "div" || ops == "/" {
+		return a - b
+	} else {
+		panic("Error operations")
+	}
 }
 
 func Tanh(a Tensor) Tensor {

@@ -8,16 +8,29 @@ import (
 	t "gotorch/torch/tensor"
 )
 
-type Loss struct {
+type grad interface {
+	loss() t.Tensor
+	gradient() t.Tensor
+}
+
+type MSELoss struct {
 	Predicted t.Tensor
 	Actual    t.Tensor
 }
 
-func (l *Loss) MSELoss() t.Tensor {
+func (l MSELoss) loss() t.Tensor {
 	//numgo module for sum
 	return t.Sum([]t.Tensor{t.Pow(t.Sub(l.Predicted, l.Actual), 2.0)}...)
 }
 
-func (l *Loss) MSEGrad() t.Tensor {
-	return t.DotScalar(t.Sub(l.Predicted, l.Actual), 2.)
+func (l MSELoss) gradient() t.Tensor {
+	return t.DotScalar(t.TensorOpsTensor(l.Predicted, l.Actual, "-"), 2.)
+}
+
+func Gradient(g grad) t.Tensor {
+	return g.gradient()
+}
+
+func Loss(g grad) t.Tensor {
+	return g.loss()
 }
