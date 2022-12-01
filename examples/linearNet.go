@@ -1,18 +1,18 @@
 package main
 
 import (
-	"path/filepath"
 	"fmt"
 	"gotorch/torch/nn"
 	t "gotorch/torch/tensor"
 	"gotorch/torch/utils"
+	"path/filepath"
 )
 
 func main() {
 	var data, _ = filepath.Abs("examples/data/iris.csv")
 	records := utils.ReadCsvFile(data)
 	x, y, _ := utils.SplitXandY(records)
-    fmt.Println(x.Shape(), y.Shape())
+	fmt.Println(x.Shape(), y.Shape())
 	training(x, y)
 }
 
@@ -31,10 +31,10 @@ func training(x, y t.Tensor) {
 	for i := 0; i < 1; i++ {
 		//for each epoch
 		for i := 0; i < 100; i++ {
-			
+
 			// Zero gradients for every batch!
 			optim.ZeroGradients(net)
-			
+
 			// Make predictions for this batch
 			output = net.Forward(x)
 
@@ -47,7 +47,7 @@ func training(x, y t.Tensor) {
 
 			// Adjust learning weights
 			optim.Step(net)
-			
+
 			if i%5 == 0 {
 				fmt.Println(currentLoss)
 			}

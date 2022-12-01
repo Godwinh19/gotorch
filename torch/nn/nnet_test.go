@@ -1,8 +1,8 @@
 package nn
 
 import (
-	"testing"
 	"gotorch/torch/tensor"
+	"testing"
 )
 
 func TestNet(t *testing.T) {

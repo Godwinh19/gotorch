@@ -1,8 +1,8 @@
 package utils
 
 import (
-	"testing"
 	"path/filepath"
+	"testing"
 )
 
 var data, _ = filepath.Abs("../../examples/data/iris.csv")
@@ -11,11 +11,10 @@ var records = ReadCsvFile(data)
 func TestCSVLoad(t *testing.T) {
 	x, _, _ := SplitXandY(records)
 	shape := x.Shape()
-    if shape[0] != 150 || shape[1] != 4{
+	if shape[0] != 150 || shape[1] != 4 {
 		t.Errorf("Expected [150, 4] but got %v", x.Shape())
 	}
 }
-
 
 func TestRandom(t *testing.T) {
 	n := 5

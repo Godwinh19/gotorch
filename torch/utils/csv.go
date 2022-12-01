@@ -1,31 +1,30 @@
 package utils
 
 import (
-	//"fmt"
+	"encoding/csv"
 	"gotorch/torch/tensor"
-    "encoding/csv"
-	"strconv"
-    "log"
-    "os"
+	"log"
 	"math/rand"
+	"os"
+	"strconv"
 )
 
 func ReadCsvFile(filePath string) tensor.Tensor {
-    f, err := os.Open(filePath)
-    if err != nil {
-        log.Fatal("Unable to read input file " + filePath, err)
-    }
-    defer f.Close()
+	f, err := os.Open(filePath)
+	if err != nil {
+		log.Fatal("Unable to read input file "+filePath, err)
+	}
+	defer f.Close()
 
-    csvReader := csv.NewReader(f)
-    records, err := csvReader.ReadAll()
-    if err != nil {
-        log.Fatal("Unable to parse file as CSV for " + filePath, err)
-    }
+	csvReader := csv.NewReader(f)
+	records, err := csvReader.ReadAll()
+	if err != nil {
+		log.Fatal("Unable to parse file as CSV for "+filePath, err)
+	}
 
 	recordsTensor := convertToTensor(records)
 
-    return recordsTensor
+	return recordsTensor
 }
 
 func convertToTensor(records [][]string) tensor.Tensor {
@@ -54,7 +53,7 @@ func SplitXandY(records tensor.Tensor) (tensor.Tensor, tensor.Tensor, error) {
 	y := tensor.Zeros(shape[0], 1)
 
 	for i := 0; i < shape[0]; i++ {
-		for j := 0; j < shape[1] - 1; j++ {
+		for j := 0; j < shape[1]-1; j++ {
 			x.Data[i][j] = records.Data[i][j]
 		}
 		y.Data[i][0] = records.Data[i][shape[1]-1]
@@ -62,7 +61,6 @@ func SplitXandY(records tensor.Tensor) (tensor.Tensor, tensor.Tensor, error) {
 
 	return x, y, nil
 }
-
 
 func Random(records tensor.Tensor, n int) tensor.Tensor {
 	shape := records.Shape()

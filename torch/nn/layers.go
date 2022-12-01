@@ -43,7 +43,7 @@ func (l *Linear) Forward(inputs t.Tensor) (outputs t.Tensor) {
 		l.InitializeParameters()
 	}
 	params := l.LLayer.Params
-		
+
 	l.Inputs = inputs
 	outputs = t.Sum(t.Dot(inputs, params["w"]), params["b"])
 	return
@@ -80,8 +80,8 @@ An activation layer just applies a function elementwise to its inputs
 
 // Activation Linear
 type Activation struct {
-	Name string
-	Inputs t.Tensor
+	Name         string
+	Inputs       t.Tensor
 	forwardValue t.Tensor
 }
 
@@ -134,7 +134,7 @@ func (a *Activation) Forward(inputs t.Tensor) t.Tensor {
 func (a *Activation) Backward(grad t.Tensor) t.Tensor {
 	if a.Name == "tanh" {
 		return t.TensorOpsTensor(a.tanh_prime(a.Inputs), grad, "*")
-	}else if a.Name == "relu" {
+	} else if a.Name == "relu" {
 		return t.TensorOpsTensor(a.relu_prime(a.Inputs), grad, "*")
 	} else {
 		panic("Activation function not implemented")

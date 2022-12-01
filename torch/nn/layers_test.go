@@ -1,12 +1,10 @@
 package nn
 
 import (
-	"testing"
 	"fmt"
 	"gotorch/torch/tensor"
+	"testing"
 )
-
-
 
 func TestForward(t *testing.T) {
 	data := tensor.Rand(5, 4)
