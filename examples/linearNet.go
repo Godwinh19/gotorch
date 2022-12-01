@@ -31,9 +31,7 @@ func training(x, y t.Tensor) {
 	for i := 0; i < 1; i++ {
 		//for each epoch
 		for i := 0; i < 100; i++ {
-			// for each batch, next we'll create data batch
-			// compute loss for each batch
-
+			
 			// Zero gradients for every batch!
 			optim.ZeroGradients(net)
 			
