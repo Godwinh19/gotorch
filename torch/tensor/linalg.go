@@ -155,6 +155,18 @@ func Tanh(a Tensor) Tensor {
 	return a
 }
 
+func ReLU(a Tensor) Tensor {
+	shape := a.Shape()
+	for i := 0; i < shape[0]; i++ {
+		for j := 0; j < shape[1]; j++ {
+			if a.Data[i][j] < 0 {
+				a.Data[i][j] = 0
+			}
+		}
+	}
+	return a
+}
+
 func Pow(a Tensor, pow float64) Tensor {
 	for i := 0; i < a.Rows; i++ {
 		for j := 0; j < a.Cols; j++ {

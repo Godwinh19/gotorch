@@ -17,23 +17,20 @@ func main() {
 }
 
 func training(x, y t.Tensor) {
-	//x1 := t.Rand(100, 12)
 	a1 := nn.Activation{Name: "tanh"}
 	linear_1 := nn.Linear{InputSize: int64(x.Shape()[1]), OutputSize: 5, Activation: a1}
-	a2 := nn.Activation{Name: "tanh"}
-	linear_2 := nn.Linear{InputSize: 5, OutputSize: 3, Activation: a2}
-	a3 := nn.Activation{Name: "relu"}
-	linear_3 := nn.Linear{InputSize: 3, OutputSize: 1, Activation: a3}
+	a2 := nn.Activation{Name: "relu"}
+	linear_2 := nn.Linear{InputSize: 5, OutputSize: 1, Activation: a2}
 
 	var output, grad t.Tensor
 	var currentLoss float64
-	net := nn.NeuralNet{NLinear: []*nn.Linear{&linear_1, &linear_2, &linear_3}}
+	net := nn.NeuralNet{NLinear: []*nn.Linear{&linear_1, &linear_2}}
 	optim := nn.SGD{Lr: 0.00001}
 	loss := nn.MSELoss{Actual: y}
 
 	for i := 0; i < 1; i++ {
 		//for each epoch
-		for i := 0; i < 4; i++ {
+		for i := 0; i < 100; i++ {
 			// for each batch, next we'll create data batch
 			// compute loss for each batch
 
@@ -53,13 +50,11 @@ func training(x, y t.Tensor) {
 			// Adjust learning weights
 			optim.Step(net)
 			
-			if i%1 == 0 {
+			if i%5 == 0 {
 				fmt.Println(currentLoss)
 			}
 		}
 	}
-	// Next add softmax function
-	//fmt.Println(net.NLinear[2].LLayer)
 	x_test := utils.Random(x, 1)
 	fmt.Println(x_test)
 	fmt.Println(net.Forward(x_test))

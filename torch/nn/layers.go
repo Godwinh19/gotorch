@@ -97,11 +97,35 @@ func (a *Activation) tanh_prime(x t.Tensor) t.Tensor {
 	return output
 }
 
+func (a *Activation) relu(x t.Tensor) t.Tensor {
+	activationValue := t.ReLU(x)
+	a.forwardValue = activationValue
+	return activationValue
+}
+
+func (a *Activation) relu_prime(x t.Tensor) t.Tensor {
+	shape := x.Shape()
+	var temp float64
+	for i := 0; i < shape[0]; i++ {
+		for j := 0; j < shape[1]; j++ {
+			temp = x.Data[i][j]
+			if temp < 0 {
+				x.Data[i][j] = 0
+			} else {
+				x.Data[i][j] = 1
+			}
+		}
+	}
+	return x
+}
+
 func (a *Activation) Forward(inputs t.Tensor) t.Tensor {
 	a.Inputs = inputs
-	// Currently work with only tanh
+	// Currently work with tanh, relu
 	if a.Name == "tanh" {
 		return a.tanh(inputs)
+	} else if a.Name == "relu" {
+		return a.relu(inputs)
 	} else {
 		panic("Activation function not implemented")
 	}
@@ -110,9 +134,15 @@ func (a *Activation) Forward(inputs t.Tensor) t.Tensor {
 func (a *Activation) Backward(grad t.Tensor) t.Tensor {
 	if a.Name == "tanh" {
 		return t.TensorOpsTensor(a.tanh_prime(a.Inputs), grad, "*")
+	}else if a.Name == "relu" {
+		return t.TensorOpsTensor(a.relu_prime(a.Inputs), grad, "*")
 	} else {
 		panic("Activation function not implemented")
 	}
+}
+
+func (a *Activation) IsExist() bool {
+	return a.Name != ""
 }
 
 // End Activation Layer
