@@ -2,6 +2,7 @@ package nn
 
 import (
 	"gotorch/torch/tensor"
+	"math"
 )
 
 /*
@@ -37,3 +38,37 @@ func (sgd *SGD) updateParameters(params Layer) {
 		tensor.DotScalar(params.Grads["b"], sgd.Lr).Data[0][0],
 		"-")
 }
+
+// Learning rate scheduler
+type LearningRateScheduler struct {
+	// The starting learning rate
+	startLearningRate float64
+	// The number of steps in each epoch
+	stepsPerEpoch int
+	// The current step
+	currentStep int
+	// The learning rate decay factor
+	decayFactor float64
+}
+
+// StepLRScheduler create a new learning rate scheduler with the given parameters
+func StepLRScheduler(startLearningRate float64, stepsPerEpoch int, decayFactor float64) *LearningRateScheduler {
+	return &LearningRateScheduler{
+		startLearningRate: startLearningRate,
+		stepsPerEpoch: stepsPerEpoch,
+		currentStep: 0,
+		decayFactor: decayFactor,
+	}
+}
+
+// Next returns the next learning rate for the current step.
+func (s *LearningRateScheduler) Next() float64 {
+	// Calculate the learning rate for the current epoch
+	currentEpoch := float64(s.currentStep) / float64(s.stepsPerEpoch)
+	learningRate := s.startLearningRate * math.Pow(s.decayFactor, currentEpoch)
+	// Increment the current step
+	s.currentStep++
+	return learningRate
+}
+
+

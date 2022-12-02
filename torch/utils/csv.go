@@ -63,12 +63,39 @@ func SplitXandY(records tensor.Tensor) (tensor.Tensor, tensor.Tensor, error) {
 }
 
 func Random(records tensor.Tensor, n int) tensor.Tensor {
+	var temp []float64
 	shape := records.Shape()
 	newTensor := tensor.Zeros(n, shape[1])
 
-	for i := 0; i < n; i++ {
-		newTensor.Data[i] = records.Data[rand.Intn(shape[1])]
+	for i := 0; i < n; {
+		temp = records.Data[rand.Intn(shape[0])]
+		if ! isNdArrayContainsArray(newTensor.Data, temp){
+			newTensor.Data[i] = temp
+			i++
+		}
 	}
 
 	return newTensor
+}
+
+func isArrayEqual(a, b []float64) bool {
+	if len(a) == len(b) {
+		for i := 0; i < len(a); i++ {
+			if a[i] != b[i] {
+				return false
+			}
+		}
+		return true
+	} else {
+		return false
+	}
+}
+
+func isNdArrayContainsArray(a [][]float64, b []float64) bool {
+	for _, arr := range a {
+		if isArrayEqual(arr, b) {
+			return true
+		}
+	}
+	return false
 }

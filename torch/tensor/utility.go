@@ -36,3 +36,21 @@ func (t Tensor) SameTensorRowColShape(tb Tensor) error {
 	}
 	return nil
 }
+
+func (t Tensor) IsEqualTo(tb Tensor) bool {
+	err := t.SameTensorShape(tb)
+	if err != nil {
+		return false
+	}
+	shape := t.Shape()
+	for i := 0; i < shape[0]; i++ {
+		for j := 0; j < shape[1]; j++ {
+			if t.Data[i][j] != tb.Data[i][j] {
+				return false
+			}
+		}
+	}
+	return true
+
+
+}

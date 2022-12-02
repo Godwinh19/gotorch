@@ -4,5 +4,7 @@
 - Create autograd package under torch directory
 - Make API for use of packages to construct networks
 - Tensors broadcasting
-- Training loss values follow a pattern after some epoch; investigate the reason
 - Investigate on vanishing and exploding gradients techniques
+- N-dimensional tensor operations
+- Implement scalaling, normalisation techniques (sklearn)
+- Implement dataframe operations

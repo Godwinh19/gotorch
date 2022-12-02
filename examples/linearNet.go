@@ -25,7 +25,9 @@ func training(x, y t.Tensor) {
 	var output, grad t.Tensor
 	var currentLoss float64
 	net := nn.NeuralNet{NLinear: []*nn.Linear{&linear_1, &linear_2}}
-	optim := nn.SGD{Lr: 0.00001}
+	lr := 0.0001
+	optim := nn.SGD{Lr: lr}
+	scheduler := nn.StepLRScheduler(lr, 10, 0.5)
 	loss := nn.MSELoss{Actual: y}
 
 	for i := 0; i < 1; i++ {
@@ -47,6 +49,7 @@ func training(x, y t.Tensor) {
 
 			// Adjust learning weights
 			optim.Step(net)
+			optim.Lr = scheduler.Next()
 
 			if i%5 == 0 {
 				fmt.Println(currentLoss)
