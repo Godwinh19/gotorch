@@ -3,6 +3,7 @@ package main
 import (
 	//"path/filepath"
 	"fmt"
+	"reflect"
 	"gotorch/torch/nn"
 	t "gotorch/torch/tensor"
 	"gotorch/torch/utils"
@@ -13,7 +14,14 @@ func main() {
 	tensor := t.BuildTensor(2, 3)
 	/// TODO: investigate on buiding multi dimensional tensors
 	// and convert to float64
-	fmt.Println("%v", tensor)
+	//fmt.Printf("%v\n",tensor)
+	t2 := reflect.ValueOf(tensor)
+	
+	for i := 0; i < t2.Len(); i++ {
+		fmt.Printf("%v\n",t2.Index(i).Interface()) 
+	}
+
+
 
 	/*
 	var data, _ = filepath.Abs("examples/data/iris.csv")

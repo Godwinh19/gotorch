@@ -7,7 +7,7 @@ import (
 
 func BuildTensor(dimension int, numAxes int) interface{} {
 	if numAxes == 1 {
-		return make([]int, dimension)
+		return make([]float64, dimension)
 	} else {
 		data := make([]interface{}, dimension)
 		for i := 0; i < dimension; i++ {
