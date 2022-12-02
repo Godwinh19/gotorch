@@ -135,11 +135,11 @@ func linearOperation(a float64, b float64, ops string) float64 {
 	if ops == "minus" || ops == "-" {
 		return a - b
 	} else if ops == "plus" || ops == "+" {
-		return a - b
+		return a + b
 	} else if ops == "mul" || ops == "*" {
-		return a - b
+		return a * b
 	} else if ops == "div" || ops == "/" {
-		return a - b
+		return a / b
 	} else {
 		panic("Error operations")
 	}
