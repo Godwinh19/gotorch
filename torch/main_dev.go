@@ -1,7 +1,7 @@
 package main
 
 import (
-	"path/filepath"
+	//"path/filepath"
 	"fmt"
 	"gotorch/torch/nn"
 	t "gotorch/torch/tensor"
@@ -9,11 +9,19 @@ import (
 )
 
 func main() {
+
+	tensor := t.BuildTensor(2, 3)
+	/// TODO: investigate on buiding multi dimensional tensors
+	// and convert to float64
+	fmt.Println("%v", tensor)
+
+	/*
 	var data, _ = filepath.Abs("examples/data/iris.csv")
 	records := utils.ReadCsvFile(data)
 	x, y, _ := utils.SplitXandY(records)
     fmt.Println(x.Shape(), y.Shape())
 	training(x, y)
+	*/
 }
 
 func training(x, y t.Tensor) {
@@ -64,7 +72,7 @@ func training(x, y t.Tensor) {
 	}
 	// Next add softmax function
 	//fmt.Println(net.NLinear[2].LLayer)
-	x_test := utils.Random(x, 1)
+	x_test := utils.Random(x, 4)
 	fmt.Println(x_test)
-	fmt.Println(net.Forward(x_test))
+	fmt.Println((net.Forward(x_test)))
 }

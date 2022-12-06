@@ -8,3 +8,4 @@
 - N-dimensional tensor operations
 - Implement scalaling, normalisation techniques (sklearn)
 - Implement dataframe operations
+- rollback to 1d type data tensor and figure out n-dimensional construction
