@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	t "gotorch/torch/tensor"
+	t "github.com/Godwinh19/gotorch/torch/tensor"
 )
 
 func mainTensor() {
