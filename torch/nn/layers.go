@@ -19,8 +19,8 @@ type Layer struct {
 }
 
 type Linear struct {
-	InputSize  int64
-	OutputSize int64
+	InputSize  int
+	OutputSize int
 	LLayer     Layer
 	Activation Activation
 	Inputs     t.Tensor // should we track each data for layer or make optional ?
@@ -28,14 +28,14 @@ type Linear struct {
 
 func (l *Linear) InitializeParameters() {
 	params := make(map[string]t.Tensor)
-	params["w"] = t.Rand(int(l.InputSize), int(l.OutputSize))
+	params["w"] = t.Rand(l.InputSize, l.OutputSize)
 
 	//params["b"] = t.Zeros(1, 1)
-	params["b"] = t.Zeros(1, int(l.OutputSize))
+	params["b"] = t.Zeros(1, l.OutputSize)
 	l.LLayer.Params = params
 }
 
-func (l *Linear) Forward(inputs t.Tensor) (outputs t.Tensor) {
+func (l *Linear) Forward(inputs t.Tensor) (outputs t.Tensor, weights map[string]t.Tensor) {
 	/*
 	   outputs = inputs @ w + b
 	*/
@@ -46,7 +46,7 @@ func (l *Linear) Forward(inputs t.Tensor) (outputs t.Tensor) {
 
 	l.Inputs = inputs
 	outputs = t.Sum(t.Dot(inputs, params["w"]), params["b"])
-	return
+	return outputs, params
 }
 
 func (l *Linear) Backward(grad t.Tensor) (gradients t.Tensor) {
