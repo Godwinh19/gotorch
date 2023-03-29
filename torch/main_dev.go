@@ -1,41 +1,40 @@
+//move to test later
+
 package main
 
 import (
-	//"path/filepath"
 	"fmt"
-	"reflect"
 	"gotorch/torch/nn"
 	t "gotorch/torch/tensor"
 	"gotorch/torch/utils"
+	"reflect"
 )
 
-func main() {
+func buildTensor() {
 
 	tensor := t.BuildTensor(2, 3)
 	/// TODO: investigate on buiding multi dimensional tensors
 	// and convert to float64
 	//fmt.Printf("%v\n",tensor)
 	t2 := reflect.ValueOf(tensor)
-	
+
 	for i := 0; i < t2.Len(); i++ {
-		fmt.Printf("%v\n",t2.Index(i).Interface()) 
+		fmt.Printf("%v\n", t2.Index(i).Interface())
 	}
 
-
-
 	/*
-	var data, _ = filepath.Abs("examples/data/iris.csv")
-	records := utils.ReadCsvFile(data)
-	x, y, _ := utils.SplitXandY(records)
-    fmt.Println(x.Shape(), y.Shape())
-	training(x, y)
+			var data, _ = filepath.Abs("examples/data/iris.csv")
+			records := utils.ReadCsvFile(data)
+			x, y, _ := utils.SplitXandY(records)
+		    fmt.Println(x.Shape(), y.Shape())
+			training(x, y)
 	*/
 }
 
 func training(x, y t.Tensor) {
 	//x1 := t.Rand(100, 12)
 	a1 := nn.Activation{Name: "tanh"}
-	linear_1 := nn.Linear{InputSize: int64(x.Shape()[1]), OutputSize: 5, Activation: a1}
+	linear_1 := nn.Linear{InputSize: x.Shape()[1], OutputSize: 5, Activation: a1}
 	a2 := nn.Activation{Name: "tanh"}
 	linear_2 := nn.Linear{InputSize: 5, OutputSize: 3, Activation: a2}
 	a3 := nn.Activation{Name: "relu"}
@@ -57,9 +56,9 @@ func training(x, y t.Tensor) {
 
 			// Zero gradients for every batch!
 			optim.ZeroGradients(net)
-			
+
 			// Make predictions for this batch
-			output = net.Forward(x)
+			output, _ = net.Forward(x)
 
 			// Compute the loss and its gradients
 			loss.Predicted = output
@@ -72,7 +71,7 @@ func training(x, y t.Tensor) {
 			optim.Step(net)
 			// the next lr will be the lr returned by scheduler
 			optim.Lr = scheduler.Next()
-			
+
 			if i%1 == 0 {
 				fmt.Println(currentLoss)
 			}

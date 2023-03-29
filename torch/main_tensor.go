@@ -5,7 +5,7 @@ import (
 	t "gotorch/torch/tensor"
 )
 
-func main() {
+func mainTensor() {
 	ts := t.NewTensor([][]float64{{1., 2.0, 4}, {1.0, 5., 3.}})
 	tr := t.Rand(1, 4)
 	trb := t.Rand(4, 4)
