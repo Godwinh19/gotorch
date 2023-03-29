@@ -1,7 +1,7 @@
 package nn
 
 import (
-	"gotorch/torch/tensor"
+	"github.com/Godwinh19/gotorch/torch/tensor"
 	"math"
 )
 
@@ -55,9 +55,9 @@ type LearningRateScheduler struct {
 func StepLRScheduler(startLearningRate float64, stepsPerEpoch int, decayFactor float64) *LearningRateScheduler {
 	return &LearningRateScheduler{
 		startLearningRate: startLearningRate,
-		stepsPerEpoch: stepsPerEpoch,
-		currentStep: 0,
-		decayFactor: decayFactor,
+		stepsPerEpoch:     stepsPerEpoch,
+		currentStep:       0,
+		decayFactor:       decayFactor,
 	}
 }
 
@@ -70,5 +70,3 @@ func (s *LearningRateScheduler) Next() float64 {
 	s.currentStep++
 	return learningRate
 }
-
-

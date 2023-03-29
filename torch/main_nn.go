@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"gotorch/torch/nn"
-	t "gotorch/torch/tensor"
+	"github.com/Godwinh19/gotorch/torch/nn"
+	t "github.com/Godwinh19/gotorch/torch/tensor"
 )
 
 func main() {

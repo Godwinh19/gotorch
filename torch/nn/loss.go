@@ -5,7 +5,7 @@ A loss function measure how good predictions are, it's used to adjust
 the parameters of our network
 */
 import (
-	t "gotorch/torch/tensor"
+	t "github.com/Godwinh19/gotorch/torch/tensor"
 )
 
 type grad interface {

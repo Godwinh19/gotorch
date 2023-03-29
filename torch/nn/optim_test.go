@@ -2,14 +2,14 @@ package nn
 
 import (
 	"fmt"
-	"gotorch/torch/tensor"
+	"github.com/Godwinh19/gotorch/torch/tensor"
 	"testing"
 )
 
 func TestSGD(t *testing.T) {
 	data := tensor.Rand(4, 2)
 	linear := Linear{InputSize: 2, OutputSize: 4}
-	one_forward := linear.Forward(data)
+	one_forward, _ := linear.Forward(data)
 	/*
 		@TODO
 		compute manually forward vector for comparison

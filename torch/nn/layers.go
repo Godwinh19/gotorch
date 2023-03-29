@@ -10,7 +10,7 @@ Ex: inputs -> Linear -> Tanh -> Linear -> output
 */
 
 import (
-	t "gotorch/torch/tensor"
+	t "github.com/Godwinh19/gotorch/torch/tensor"
 )
 
 type Layer struct {

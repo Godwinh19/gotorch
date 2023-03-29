@@ -1,7 +1,7 @@
 package nn
 
 import (
-	"gotorch/torch/tensor"
+	"github.com/Godwinh19/gotorch/torch/tensor"
 	"testing"
 )
 
@@ -15,7 +15,7 @@ func TestNet(t *testing.T) {
 	linear_3 := Linear{InputSize: 3, OutputSize: 1, Activation: a3}
 
 	net := NeuralNet{NLinear: []*Linear{&linear_1, &linear_2, &linear_3}}
-	_ = net.Forward(x1)
+	_, _ = net.Forward(x1)
 	_ = net.Backward(x1)
 
 }

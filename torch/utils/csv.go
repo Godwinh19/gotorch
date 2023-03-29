@@ -2,7 +2,7 @@ package utils
 
 import (
 	"encoding/csv"
-	"gotorch/torch/tensor"
+	"github.com/Godwinh19/gotorch/torch/tensor"
 	"log"
 	"math/rand"
 	"os"
@@ -69,7 +69,7 @@ func Random(records tensor.Tensor, n int) tensor.Tensor {
 
 	for i := 0; i < n; {
 		temp = records.Data[rand.Intn(shape[0])]
-		if ! isNdArrayContainsArray(newTensor.Data, temp){
+		if !isNdArrayContainsArray(newTensor.Data, temp) {
 			newTensor.Data[i] = temp
 			i++
 		}
