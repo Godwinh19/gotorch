@@ -85,6 +85,12 @@ type Activation struct {
 	forwardValue t.Tensor
 }
 
+func (a *Activation) isForwardValue() {
+	if cap(a.forwardValue.Data) == 0 {
+		panic("Compute the forward first")
+	}
+}
+
 func (a *Activation) tanh(x t.Tensor) t.Tensor {
 	activationValue := t.Tanh(x)
 	a.forwardValue = activationValue
@@ -92,9 +98,7 @@ func (a *Activation) tanh(x t.Tensor) t.Tensor {
 }
 
 func (a *Activation) tanh_prime(x t.Tensor) t.Tensor {
-	if cap(a.forwardValue.Data) == 0 {
-		panic("Compute the forward first")
-	}
+	a.isForwardValue()
 	y := t.Pow(a.forwardValue, 2.)
 	output := t.ScalarOpsTensor(1., y, "-")
 	return output
@@ -107,9 +111,7 @@ func (a *Activation) relu(x t.Tensor) t.Tensor {
 }
 
 func (a *Activation) relu_prime(x t.Tensor) t.Tensor {
-	if cap(a.forwardValue.Data) == 0 {
-		panic("Compute the forward first")
-	}
+	a.isForwardValue()
 	shape := x.Shape()
 	var temp float64
 	for i := 0; i < shape[0]; i++ {
