@@ -30,18 +30,17 @@ func (t *Tensor) Reshape(shape []int) Tensor {
 
 	if len(t.Data) != size {
 		panic("Total size of new array must be unchanged")
-	  }
-	
+	}
+
 	// t.Data = reflect.ValueOf(t.Data).Slice(0, size).Interface().([]float64)
 	return *t
 }
-
 
 func Softmax(tensor Tensor) Tensor {
 	// TODO: tensor format not yet stable
 	// Assume that tensor are 1-vector logits
 	//tensor = tensor.Reshape(1, -1)
-	
+
 	sum := 0.0
 	for _, value := range tensor.Data[0] {
 		sum += math.Exp(value)

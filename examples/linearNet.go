@@ -9,7 +9,7 @@ import (
 )
 
 func main() {
-	var data, _ = filepath.Abs("examples/data/iris.csv")
+	var data, _ = filepath.Abs("data/iris.csv")
 	records := utils.ReadCsvFile(data)
 	x, y, _ := utils.SplitXandY(records)
 	fmt.Println(x.Shape(), y.Shape())

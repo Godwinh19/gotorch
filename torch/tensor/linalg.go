@@ -87,16 +87,6 @@ func AddScalar(a Tensor, scalar float64) Tensor {
 	return output
 }
 
-func ScalarMinusTensor(a Tensor, scalar float64) Tensor {
-	output := Zeros(a.Rows, a.Cols)
-	for i := 0; i < a.Rows; i++ {
-		for j := 0; j < a.Cols; j++ {
-			output.Data[i][j] = scalar - a.Data[i][j]
-		}
-	}
-	return output
-}
-
 func TensorOpsTensor(a Tensor, b Tensor, ops string) Tensor {
 	err := a.SameTensorShape(b)
 	if err != nil {
@@ -116,6 +106,16 @@ func TensorOpsTensorWithBroadcasting(a Tensor, b Tensor, ops string) Tensor {
 	for i := 0; i < a.Rows; i++ {
 		for j := 0; j < a.Cols; j++ {
 			output.Data[i][j] = linearOperation(a.Data[i][j], b.Data[0][j], ops)
+		}
+	}
+	return output
+}
+
+func ScalarOpsTensor(a float64, b Tensor, ops string) Tensor {
+	output := Zeros(b.Rows, b.Cols)
+	for i := 0; i < b.Rows; i++ {
+		for j := 0; j < b.Cols; j++ {
+			output.Data[i][j] = linearOperation(a, b.Data[i][j], ops)
 		}
 	}
 	return output

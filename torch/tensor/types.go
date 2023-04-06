@@ -12,7 +12,7 @@ type Tensor struct {
 
 func (t Tensor) Shape() []int {
 	//assert that slice is homogeneous
-	AssertTensorFormat(t)
+	_ = AssertTensorFormat(t)
 	t.Rows = cap(t.Data)
 	t.Cols = len(t.Data[0])
 	return []int{t.Rows, t.Cols}
@@ -49,9 +49,31 @@ func Zeros(rows, cols int) Tensor {
 	data := make([][]float64, rows)
 	for i := 0; i < rows; i++ {
 		data[i] = make([]float64, cols)
-		for j := 0; j < cols; j++ {
-			data[i][j] = 0
-		}
 	}
 	return Tensor{Data: data, RequiresGrad: false, Cols: cols, Rows: rows}
+}
+
+func (t *Tensor) Slice(startRow, endRow, startCol, endCol int) *Tensor {
+	if startRow < 0 || startRow >= t.Rows || endRow < startRow || endRow > t.Rows ||
+		startCol < 0 || startCol >= t.Cols || endCol < startCol || endCol > t.Cols {
+		return nil
+	}
+
+	rows := endRow - startRow
+	cols := endCol - startCol
+
+	newData := make([][]float64, rows)
+	for i := 0; i < rows; i++ {
+		newData[i] = make([]float64, cols)
+		for j := 0; j < cols; j++ {
+			newData[i][j] = t.Data[i+startRow][j+startCol]
+		}
+	}
+
+	return &Tensor{
+		Rows:         rows,
+		Cols:         cols,
+		Data:         newData,
+		RequiresGrad: t.RequiresGrad,
+	}
 }

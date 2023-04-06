@@ -10,7 +10,7 @@ type NeuralNet struct {
 
 func (net *NeuralNet) Forward(inputs t.Tensor) (t.Tensor, interface{}) {
 	//This function compute the forward and return the layer output and all weights
-	weights := make(map[int]map[string]t.Tensor, len(net.NLinear))
+	weights := make([]map[string]t.Tensor, len(net.NLinear))
 	for idx, layer := range net.NLinear {
 		inputs, weights[idx] = layer.Forward(inputs)
 		if layer.Activation.IsExist() {
@@ -22,8 +22,7 @@ func (net *NeuralNet) Forward(inputs t.Tensor) (t.Tensor, interface{}) {
 
 func (net *NeuralNet) Backward(grad t.Tensor) t.Tensor {
 	for index := range net.NLinear {
-		index++
-		currentLayer := net.NLinear[len(net.NLinear)-index] // backward on reversed layers
+		currentLayer := net.NLinear[len(net.NLinear)-(index+1)] // backward on reversed layers
 		if currentLayer.Activation.IsExist() {
 			grad = currentLayer.Activation.Backward(grad)
 		}
@@ -31,4 +30,10 @@ func (net *NeuralNet) Backward(grad t.Tensor) t.Tensor {
 	}
 
 	return grad
+}
+
+func (net *NeuralNet) InitializeWeights() {
+	for _, layer := range net.NLinear {
+		layer.InitializeParameters()
+	}
 }

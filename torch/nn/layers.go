@@ -92,8 +92,11 @@ func (a *Activation) tanh(x t.Tensor) t.Tensor {
 }
 
 func (a *Activation) tanh_prime(x t.Tensor) t.Tensor {
+	if cap(a.forwardValue.Data) == 0 {
+		panic("Compute the forward first")
+	}
 	y := t.Pow(a.forwardValue, 2.)
-	output := t.ScalarMinusTensor(y, 1.)
+	output := t.ScalarOpsTensor(1., y, "-")
 	return output
 }
 
@@ -104,6 +107,9 @@ func (a *Activation) relu(x t.Tensor) t.Tensor {
 }
 
 func (a *Activation) relu_prime(x t.Tensor) t.Tensor {
+	if cap(a.forwardValue.Data) == 0 {
+		panic("Compute the forward first")
+	}
 	shape := x.Shape()
 	var temp float64
 	for i := 0; i < shape[0]; i++ {

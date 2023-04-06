@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/csv"
+	"errors"
 	"github.com/Godwinh19/gotorch/torch/tensor"
 	"log"
 	"math/rand"
@@ -12,14 +13,14 @@ import (
 func ReadCsvFile(filePath string) tensor.Tensor {
 	f, err := os.Open(filePath)
 	if err != nil {
-		log.Fatal("Unable to read input file "+filePath, err)
+		log.Fatal("Unable to read input file " + filePath + ": " + err.Error())
 	}
 	defer f.Close()
 
 	csvReader := csv.NewReader(f)
 	records, err := csvReader.ReadAll()
 	if err != nil {
-		log.Fatal("Unable to parse file as CSV for "+filePath, err)
+		log.Fatal("Unable to parse file as CSV for " + filePath + ": " + err.Error())
 	}
 
 	recordsTensor := convertToTensor(records)
@@ -32,14 +33,14 @@ func convertToTensor(records [][]string) tensor.Tensor {
 	cols := len(records[0])
 
 	out := tensor.Zeros(rows, cols)
-	var err error
 	for i, record := range records {
 		for j, v := range record {
-			out.Data[i][j], err = strconv.ParseFloat(v, 64)
+			val, err := strconv.ParseFloat(v, 64)
 
 			if err != nil {
 				panic(err)
 			}
+			out.Data[i][j] = val
 		}
 	}
 	return out
@@ -49,6 +50,9 @@ func SplitXandY(records tensor.Tensor) (tensor.Tensor, tensor.Tensor, error) {
 	//This function assume Y is last column and X the first ones
 
 	shape := records.Shape()
+	if shape[1] < 2 {
+		return tensor.Tensor{}, tensor.Tensor{}, errors.New("expected at least 2 columns in input tensor")
+	}
 	x := tensor.Zeros(shape[0], shape[1]-1)
 	y := tensor.Zeros(shape[0], 1)
 
@@ -63,19 +67,24 @@ func SplitXandY(records tensor.Tensor) (tensor.Tensor, tensor.Tensor, error) {
 }
 
 func Random(records tensor.Tensor, n int) tensor.Tensor {
-	var temp []float64
 	shape := records.Shape()
-	newTensor := tensor.Zeros(n, shape[1])
-
-	for i := 0; i < n; {
-		temp = records.Data[rand.Intn(shape[0])]
-		if !isNdArrayContainsArray(newTensor.Data, temp) {
-			newTensor.Data[i] = temp
-			i++
-		}
+	if n > shape[0] {
+		n = shape[0]
 	}
 
-	return newTensor
+	shuffled := make([][]float64, shape[0])
+	perm := rand.Perm(shape[0])
+	for i, p := range perm {
+		shuffled[i] = records.Data[p]
+	}
+
+	// Select first n rows
+	out := tensor.Zeros(n, shape[1])
+	for i := 0; i < n; i++ {
+		out.Data[i] = shuffled[i]
+	}
+
+	return out
 }
 
 func isArrayEqual(a, b []float64) bool {
