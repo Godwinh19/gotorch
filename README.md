@@ -37,7 +37,7 @@ func main() {
 	a1 := nn.Activation{Name: "tanh"}
 	l1 := nn.Linear{InputSize: 4, OutputSize: 5, Activation: a1}
 
-	a2 := nn.Activation{Name: "tanh"}
+	a2 := nn.Activation{Name: "relu"}
 	l2 := nn.Linear{InputSize: 5, OutputSize: 3, Activation: a2}
     
 	a3 := nn.Activation{Name: "tanh"}

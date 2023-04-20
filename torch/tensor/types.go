@@ -4,10 +4,21 @@ import (
 	"math/rand"
 )
 
+type ITensor interface {
+	Shape()
+	Rand()
+}
+
 type Tensor struct {
 	Rows, Cols   int
 	Data         [][]float64
 	RequiresGrad bool
+}
+
+type NTensor struct {
+	Dim          []int
+	Data         []float64
+	RequiredGrad bool
 }
 
 func (t Tensor) Shape() []int {
@@ -16,6 +27,10 @@ func (t Tensor) Shape() []int {
 	t.Rows = cap(t.Data)
 	t.Cols = len(t.Data[0])
 	return []int{t.Rows, t.Cols}
+}
+
+func (t *NTensor) Shape() []int {
+	return t.Dim
 }
 
 func (t Tensor) Transpose() Tensor {
@@ -43,6 +58,10 @@ func Rand(rows, cols int) Tensor {
 		}
 	}
 	return Tensor{Data: data, RequiresGrad: false, Cols: cols, Rows: rows}
+}
+
+func (t *NTensor) Rand() NTensor {
+	return NTensor{}
 }
 
 func Zeros(rows, cols int) Tensor {
