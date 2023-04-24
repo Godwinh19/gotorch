@@ -28,10 +28,10 @@ type Linear struct {
 
 func (l *Linear) InitializeParameters() {
 	params := make(map[string]t.Tensor)
-	params["w"] = t.Rand(l.InputSize, l.OutputSize)
+	params["w"] = *t.Rand([]int{l.InputSize, l.OutputSize})
 
 	//params["b"] = t.Zeros(1, 1)
-	params["b"] = t.Zeros(1, l.OutputSize)
+	params["b"] = *t.Zeros([]int{1, l.OutputSize})
 	l.LLayer.Params = params
 }
 
@@ -45,7 +45,7 @@ func (l *Linear) Forward(inputs t.Tensor) (outputs t.Tensor, weights map[string]
 	params := l.LLayer.Params
 
 	l.Inputs = inputs
-	outputs = t.Sum(t.Dot(inputs, params["w"]), params["b"])
+	outputs = *t.Sum(*t.Dot(inputs, params["w"]), params["b"])
 	return outputs, params
 }
 
@@ -65,11 +65,12 @@ func (l *Linear) Backward(grad t.Tensor) (gradients t.Tensor) {
 	*/
 
 	grads := make(map[string]t.Tensor)
-	grads["b"] = t.Sum([]t.Tensor{grad}...)
-	grads["w"] = t.Dot(l.Inputs.Transpose(), grad)
+	grads["b"] = *t.Sum([]t.Tensor{grad}...)
+	grads["w"] = *t.Dot(*l.Inputs.Transpose(), grad)
 	l.LLayer.Grads = grads
 
-	gradients = t.Dot(grad, l.LLayer.Params["w"].Transpose())
+	weights := l.LLayer.Params["w"]
+	gradients = *t.Dot(grad, *weights.Transpose())
 	return
 }
 
@@ -101,7 +102,7 @@ func (a *Activation) tanh_prime(x t.Tensor) t.Tensor {
 	a.isForwardValue()
 	y := t.Pow(a.forwardValue, 2.)
 	output := t.ScalarOpsTensor(1., y, "-")
-	return output
+	return *output
 }
 
 func (a *Activation) relu(x t.Tensor) t.Tensor {
@@ -112,16 +113,11 @@ func (a *Activation) relu(x t.Tensor) t.Tensor {
 
 func (a *Activation) relu_prime(x t.Tensor) t.Tensor {
 	a.isForwardValue()
-	shape := x.Shape()
-	var temp float64
-	for i := 0; i < shape[0]; i++ {
-		for j := 0; j < shape[1]; j++ {
-			temp = x.Data[i][j]
-			if temp < 0 {
-				x.Data[i][j] = 0
-			} else {
-				x.Data[i][j] = 1
-			}
+	for i, value := range x.Data {
+		if value < 0 {
+			x.Data[i] = 0
+		} else {
+			x.Data[i] = 1
 		}
 	}
 	return x
@@ -141,9 +137,9 @@ func (a *Activation) Forward(inputs t.Tensor) t.Tensor {
 
 func (a *Activation) Backward(grad t.Tensor) t.Tensor {
 	if a.Name == "tanh" {
-		return t.TensorOpsTensor(a.tanh_prime(a.Inputs), grad, "*")
+		return *t.TensorOpsTensor(a.tanh_prime(a.Inputs), grad, "*")
 	} else if a.Name == "relu" {
-		return t.TensorOpsTensor(a.relu_prime(a.Inputs), grad, "*")
+		return *t.TensorOpsTensor(a.relu_prime(a.Inputs), grad, "*")
 	} else {
 		panic("Activation function not implemented")
 	}

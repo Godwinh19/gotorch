@@ -6,7 +6,7 @@ import (
 )
 
 func TestNet(t *testing.T) {
-	x1 := tensor.Rand(100, 12)
+	x1 := *tensor.Rand([]int{100, 12})
 	a1 := Activation{Name: "tanh"}
 	linear_1 := Linear{InputSize: 12, OutputSize: 5, Activation: a1}
 	a2 := Activation{Name: "tanh"}
