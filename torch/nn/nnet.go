@@ -10,7 +10,7 @@ type NeuralNet struct {
 
 func (net *NeuralNet) Forward(inputs t.Tensor) (t.Tensor, interface{}) {
 	//This function compute the forward and return the layer output and all weights
-	weights := make([]map[string]t.Tensor, len(net.NLinear))
+	weights := make(map[int]map[string]t.Tensor, len(net.NLinear))
 	for idx, layer := range net.NLinear {
 		inputs, weights[idx] = layer.Forward(inputs)
 		if layer.Activation.IsExist() {
