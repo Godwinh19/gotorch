@@ -33,7 +33,7 @@ import (
 )
 
 func main() {
-    x1 := t.Rand(20, 4)
+    x1 := t.Rand([]int{20,4})
 	a1 := nn.Activation{Name: "tanh"}
 	l1 := nn.Linear{InputSize: 4, OutputSize: 5, Activation: a1}
 
@@ -47,7 +47,7 @@ func main() {
 	var currentLoss float64
 	net := nn.NeuralNet{NLinear: []*nn.Linear{&l1, &l2, &l3}}
 	optim := nn.SGD{Lr: 0.00001}
-	loss := nn.MSELoss{Actual: t.Rand(20,1)}
+	loss := nn.MSELoss{Actual: t.Rand([]int{20,1})}
 
     // training
     for i := 0; i < 10; i++ {
@@ -62,7 +62,7 @@ func main() {
         loss.Predicted = output
         grad = nn.Gradient(loss)
 
-        currentLoss = float64(nn.Loss(loss).Data[0][0])
+        currentLoss = float64(nn.Loss(loss).Data[0])
         net.Backward(grad)
 
         // Adjust learning weights
