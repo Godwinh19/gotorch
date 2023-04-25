@@ -7,7 +7,7 @@ import (
 )
 
 func TestForward(t *testing.T) {
-	data := tensor.Rand(5, 4)
+	data := *tensor.Rand([]int{5, 4})
 	linear_1 := Linear{InputSize: 4, OutputSize: 5, Inputs: data}
 	linear_2 := Linear{InputSize: 5, OutputSize: 3, Inputs: data}
 

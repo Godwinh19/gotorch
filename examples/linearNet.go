@@ -43,7 +43,7 @@ func training(x, y t.Tensor) {
 		loss.Predicted = output
 		grad = nn.Gradient(loss)
 
-		currentLoss = float64(nn.Loss(loss).Data[0][0])
+		currentLoss = float64(nn.Loss(loss).Data[0])
 		net.Backward(grad)
 
 		// Adjust learning weights

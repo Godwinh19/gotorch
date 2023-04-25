@@ -27,15 +27,15 @@ func (sgd *SGD) Step(net NeuralNet) {
 }
 
 func (sgd *SGD) updateParameters(params Layer) {
-	params.Params["w"] = tensor.TensorOpsTensor(
+	params.Params["w"] = *tensor.TensorOpsTensor(
 		params.Params["w"],
-		tensor.DotScalar(params.Grads["w"], sgd.Lr),
+		*tensor.TensorOpsScalar(params.Grads["w"], sgd.Lr, "*"),
 		"-")
 
 	//params.Grads["b"] is a scalar then
-	params.Params["b"] = tensor.TensorOpsScalar(
+	params.Params["b"] = *tensor.TensorOpsScalar(
 		params.Params["b"],
-		tensor.DotScalar(params.Grads["b"], sgd.Lr).Data[0][0],
+		tensor.TensorOpsScalar(params.Grads["b"], sgd.Lr, "*").Data[0],
 		"-")
 }
 

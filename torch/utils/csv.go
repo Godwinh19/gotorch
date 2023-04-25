@@ -32,18 +32,18 @@ func convertToTensor(records [][]string) tensor.Tensor {
 	rows := len(records)
 	cols := len(records[0])
 
-	out := tensor.Zeros(rows, cols)
+	out := tensor.NewTensor([]int{rows, cols})
 	for i, record := range records {
-		for j, v := range record {
+		for _, v := range record {
 			val, err := strconv.ParseFloat(v, 64)
 
 			if err != nil {
 				panic(err)
 			}
-			out.Data[i][j] = val
+			out.Data[i] = val
 		}
 	}
-	return out
+	return *out
 }
 
 func SplitXandY(records tensor.Tensor) (tensor.Tensor, tensor.Tensor, error) {
@@ -53,17 +53,21 @@ func SplitXandY(records tensor.Tensor) (tensor.Tensor, tensor.Tensor, error) {
 	if shape[1] < 2 {
 		return tensor.Tensor{}, tensor.Tensor{}, errors.New("expected at least 2 columns in input tensor")
 	}
-	x := tensor.Zeros(shape[0], shape[1]-1)
-	y := tensor.Zeros(shape[0], 1)
+	x := tensor.Zeros([]int{shape[0], shape[1] - 1})
+	y := tensor.Zeros([]int{shape[0], 1})
+	idx, idy := 0, 0
 
 	for i := 0; i < shape[0]; i++ {
-		for j := 0; j < shape[1]-1; j++ {
-			x.Data[i][j] = records.Data[i][j]
+		if i%shape[1] == 0 {
+			y.Data[idy] = records.Data[i]
+			idy++
+		} else {
+			x.Data[idx] = records.Data[i]
+			idx++
 		}
-		y.Data[i][0] = records.Data[i][shape[1]-1]
 	}
 
-	return x, y, nil
+	return *x, *y, nil
 }
 
 func Random(records tensor.Tensor, n int) tensor.Tensor {
@@ -72,19 +76,19 @@ func Random(records tensor.Tensor, n int) tensor.Tensor {
 		n = shape[0]
 	}
 
-	shuffled := make([][]float64, shape[0])
+	shuffled := make([]float64, shape[0])
 	perm := rand.Perm(shape[0])
 	for i, p := range perm {
 		shuffled[i] = records.Data[p]
 	}
 
 	// Select first n rows
-	out := tensor.Zeros(n, shape[1])
+	out := tensor.Zeros([]int{n, shape[1]})
 	for i := 0; i < n; i++ {
 		out.Data[i] = shuffled[i]
 	}
 
-	return out
+	return *out
 }
 
 func isArrayEqual(a, b []float64) bool {

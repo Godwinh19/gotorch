@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	tensor := t.Rand(5, 4)
+	tensor := *t.Rand([]int{5, 4})
 	linear_1 := nn.Linear{InputSize: 4, OutputSize: 5}
 	linear_2 := nn.Linear{InputSize: 5, OutputSize: 3}
 

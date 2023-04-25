@@ -20,11 +20,15 @@ type MSELoss struct {
 
 func (l MSELoss) loss() t.Tensor {
 	//numgo module for sum
-	return t.Sum([]t.Tensor{t.Pow(t.Sub(l.Predicted, l.Actual), 2.0)}...)
+	_out, _ := t.Sum([]t.Tensor{t.Pow(*t.TensorOpsTensor(l.Predicted, l.Actual, "-"), 2.0)}...)
+	_out.Data[0] = _out.Data[0] / float64(len(l.Predicted.Data))
+	return *_out
 }
 
 func (l MSELoss) gradient() t.Tensor {
-	return t.DotScalar(t.TensorOpsTensor(l.Predicted, l.Actual, "-"), 2.)
+	_out := t.TensorOpsScalar(*t.TensorOpsTensor(l.Predicted, l.Actual, "-"), 2., "*")
+	_out.Data[0] = _out.Data[0] / float64(len(l.Predicted.Data))
+	return *_out
 }
 
 func Gradient(g grad) t.Tensor {

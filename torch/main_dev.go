@@ -12,7 +12,7 @@ import (
 
 func buildTensor() {
 
-	tensor := t.BuildTensor(2, 3)
+	tensor := t.NewTensor([]int{2, 3})
 	/// TODO: investigate on buiding multi dimensional tensors
 	// and convert to float64
 	//fmt.Printf("%v\n",tensor)
@@ -64,7 +64,7 @@ func training(x, y t.Tensor) {
 			loss.Predicted = output
 			grad = nn.Gradient(loss)
 
-			currentLoss = float64(nn.Loss(loss).Data[0][0])
+			currentLoss = float64(nn.Loss(loss).Data[0])
 			net.Backward(grad)
 
 			// Adjust learning weights

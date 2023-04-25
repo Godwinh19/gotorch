@@ -7,7 +7,7 @@ import (
 )
 
 func TestSGD(t *testing.T) {
-	data := tensor.Rand(4, 2)
+	data := *tensor.Rand([]int{4, 2})
 	linear := Linear{InputSize: 2, OutputSize: 4}
 	one_forward, _ := linear.Forward(data)
 	/*
