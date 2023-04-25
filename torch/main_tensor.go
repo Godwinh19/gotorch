@@ -6,13 +6,15 @@ import (
 )
 
 func mainTensor() {
-	ts := t.NewTensor([]int{3, 2}, []float64{1., 2.0, 4, 1.0, 5., 3.}, false)
+	ts := t.NewTensor([]int{3, 2})
 	tr := t.Rand([]int{1, 4})
 	trb := t.Rand([]int{4, 4})
 	fmt.Println(ts.Shape())
 	fmt.Println(tr)
-	u := t.Dot(*tr, *trb)
+	u, _ := t.Dot(*tr, *trb)
 	fmt.Println("Dot", u)
+	u, _ = t.Dot(*t.Ones([]int{3, 3}), *t.Ones([]int{3, 2}))
+	fmt.Println("Dot ones", u)
 }
 
 func main() {

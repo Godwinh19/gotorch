@@ -45,8 +45,9 @@ func (l *Linear) Forward(inputs t.Tensor) (outputs t.Tensor, weights map[string]
 	params := l.LLayer.Params
 
 	l.Inputs = inputs
-	outputs = *t.Sum(*t.Dot(inputs, params["w"]), params["b"])
-	return outputs, params
+	_dot, _ := t.Dot(inputs, params["w"])
+	_out, _ := t.Sum(*_dot, params["b"])
+	return *_out, params
 }
 
 func (l *Linear) Backward(grad t.Tensor) (gradients t.Tensor) {
@@ -65,12 +66,15 @@ func (l *Linear) Backward(grad t.Tensor) (gradients t.Tensor) {
 	*/
 
 	grads := make(map[string]t.Tensor)
-	grads["b"] = *t.Sum([]t.Tensor{grad}...)
-	grads["w"] = *t.Dot(*l.Inputs.Transpose(), grad)
+	_sum, _ := t.Sum([]t.Tensor{grad}...)
+	grads["b"] = *_sum
+	_dot, _ := t.Dot(*l.Inputs.Transpose(), grad)
+	grads["w"] = *_dot
 	l.LLayer.Grads = grads
 
 	weights := l.LLayer.Params["w"]
-	gradients = *t.Dot(grad, *weights.Transpose())
+	_dot_w, _ := t.Dot(grad, *weights.Transpose())
+	gradients = *_dot_w
 	return
 }
 

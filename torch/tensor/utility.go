@@ -1,16 +1,15 @@
 package tensor
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
 )
 
-func IsSameShape(a, b []int) interface{} {
+func IsSameShape(a, b []int) bool {
 	if Prod(a) != Prod(b) {
-		return errors.New("Matrix haven't same dimension")
+		return false
 	}
-	return nil
+	return true
 }
 
 func Prod(a []int) int {
@@ -21,9 +20,8 @@ func Prod(a []int) int {
 	return p
 }
 
-func IsEqualTo(a, b Tensor) bool {
-	err := IsSameShape(a.Shape(), b.Shape())
-	if err != nil {
+func IsTensorEqual(a, b Tensor) bool {
+	if !IsSameShape(a.Shape(), b.Shape()) {
 		return false
 	}
 
@@ -31,6 +29,18 @@ func IsEqualTo(a, b Tensor) bool {
 		return true
 	}
 	return false
+}
+
+func IsIntArrayEqual(a, b []int) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	for i := range a {
+		if a[i] != b[i] {
+			return false
+		}
+	}
+	return true
 }
 
 func Convert(val interface{}, typ reflect.Type) (interface{}, error) {

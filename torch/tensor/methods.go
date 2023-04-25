@@ -5,99 +5,50 @@ import (
 )
 
 func (t *Tensor) Transpose() *Tensor {
-	shape := make([]int, len(t.Dim))
-	copy(shape, t.Dim)
-	for i := 0; i < len(shape)/2; i++ {
-		shape[i], shape[len(shape)-1-i] = shape[len(shape)-1-i], shape[i]
+	if len(t.Dim) < 2 {
+		return t
 	}
-	newData := make([]float64, len(t.Data))
-	idx := make([]int, len(shape))
-	for i := 0; i < len(t.Data); i++ {
-		n := i
-		for j := len(idx) - 1; j >= 0; j-- {
-			idx[j] = n % shape[j]
-			n /= shape[j]
-		}
-		m := 0
-		for j := len(idx) - 1; j >= 0; j-- {
-			m = m*shape[j] + idx[j]
-		}
-		newData[i] = t.Data[m]
+	newDim := make([]int, len(t.Dim))
+	newStride := make([]int, len(t.Stride))
+	for i := range newDim {
+		newDim[i] = t.Dim[len(t.Dim)-i-1]
+		newStride[i] = t.Stride[len(t.Stride)-i-1]
 	}
-	return &Tensor{Dim: shape, Data: newData, RequiredGrad: t.RequiredGrad}
+	return &Tensor{Dim: newDim, Stride: newStride, Data: t.Data, RequiredGrad: t.RequiredGrad}
 }
 
-func (t *Tensor) Reshape(shape []int) *Tensor {
-	err := IsSameShape(shape, t.Dim)
-	if err != nil {
-		panic(err)
+func (t *Tensor) Reshape(dim []int) (*Tensor, error) {
+	if len(dim) != len(t.Dim) {
+		return nil, errors.New("Dimension mismatch")
 	}
-	newTensor := &Tensor{
-		Dim:          shape,
-		Data:         make([]float64, t.Numel()),
-		RequiredGrad: t.RequiredGrad,
-	}
-
-	for i := 0; i < t.Numel(); i++ {
-		oldIdx := UnravelIndex(i, t.Dim)
-		newIdx := UnravelIndex(i, newShape)
-		newTensor.Set(newIdx, t.Get(oldIdx))
-	}
-
-	return newTensor
-}
-
-func (t *Tensor) UnravelIndex(idx int) []int {
-	if idx < 0 || idx >= t.Size() {
-		panic(errors.New("Index out of range"))
-	}
-	indices := make([]int, len(t.Dim))
+	newStride := make([]int, len(t.Stride))
+	curStride := 1
 	for i := len(t.Dim) - 1; i >= 0; i-- {
-		indices[i] = idx % t.Dim[i]
-		idx /= t.Dim[i]
-	}
-	return indices
-}
-
-func (t *Tensor) Set(indices []int, value float64) {
-	idx := t.Index(indices)
-	t.Data[idx] = value
-}
-
-func (t *Tensor) Get(indices []int) float64 {
-	idx := t.Index(indices)
-	return t.Data[idx]
-}
-
-func (t *Tensor) Index(indices []int) int {
-	if len(indices) != len(t.Dim) {
-		panic(errors.New("Number of indices does not match tensor dimension"))
-	}
-	var idx int
-	for i := 0; i < len(t.Dim); i++ {
-		if indices[i] < 0 || indices[i] >= t.Dim[i] {
-			panic(errors.New("Index out of range"))
+		if dim[i] != -1 && dim[i] != t.Dim[i] {
+			return nil, errors.New("Dimension mismatch")
 		}
-		idx += indices[i] * t.Stride[i]
+		if dim[i] == -1 {
+			dim[i] = t.Dim[i]
+		}
+		newStride[i] = curStride
+		curStride *= dim[i]
 	}
-	return idx
+	if curStride != len(t.Data) {
+		return nil, errors.New("Dimension mismatch")
+	}
+	return &Tensor{Dim: dim, Stride: newStride, Data: t.Data, RequiredGrad: t.RequiredGrad}, nil
 }
 
-func (t *Tensor) Strides() []int {
-	// Initialize the stride array to all ones
-	stride := make([]int, len(t.Dim))
-	for i := range stride {
-		stride[i] = 1
+func NewTensor(dim []int) *Tensor {
+	size := 1
+	stride := make([]int, len(dim))
+	for i := len(dim) - 1; i >= 0; i-- {
+		stride[i] = size
+		size *= dim[i]
 	}
-
-	// Compute the stride array based on the shape of the tensor
-	for i := len(t.Dim) - 2; i >= 0; i-- {
-		stride[i] = stride[i+1] * t.Dim[i+1]
+	return &Tensor{
+		Dim:    dim,
+		Stride: stride,
+		Data:   make([]float64, size),
 	}
-
-	return stride
-}
-
-func NewTensor(dim []int, data []float64, requiredGrad bool) *Tensor {
-	return &Tensor{Dim: dim, Data: data, RequiredGrad: requiredGrad}
 }
