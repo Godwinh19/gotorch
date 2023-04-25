@@ -13,7 +13,7 @@ func Mul(a, b Tensor) (*Tensor, error) {
 	}
 
 	result := NewTensor(a.Dim)
-	for i := 0; i < len(a.Data); i++ {
+	for i := 0; i < a.Size(); i++ {
 		result.Data[i] = a.Data[i] * b.Data[i]
 	}
 	return result, nil

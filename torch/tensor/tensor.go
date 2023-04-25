@@ -57,6 +57,13 @@ func (t *Tensor) ops(other interface{}, op string) *Tensor {
 	}
 }
 
+// Fill fills the tensor with the given value.
+func (t *Tensor) Fill(value float64) {
+	for i := range t.Data {
+		t.Data[i] = value
+	}
+}
+
 func Zeros(shape []int) *Tensor {
 	return NewTensor(shape)
 }
@@ -121,7 +128,7 @@ func (t *Tensor) Softmax(dim int) (*Tensor, error) {
 
 // almostEquals returns true if the difference between a and b is less than or
 // equal to the given tolerance.
-func (t *Tensor) almostEquals(b *Tensor) bool {
+func (t *Tensor) TensorAlmostEquals(b *Tensor) bool {
 	tolerance := 0.0001
 	for i, value := range t.Data {
 		if math.Abs(value-b.Data[i]) > tolerance {
