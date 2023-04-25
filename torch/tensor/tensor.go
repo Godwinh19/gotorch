@@ -57,6 +57,22 @@ func (t *Tensor) ops(other interface{}, op string) *Tensor {
 	}
 }
 
+func (t *Tensor) Add(other interface{}) *Tensor {
+	return t.ops(other, "+")
+}
+
+func (t *Tensor) Sub(other interface{}) *Tensor {
+	return t.ops(other, "-")
+}
+
+func (t *Tensor) Mul(other interface{}) *Tensor {
+	return t.ops(other, "*")
+}
+
+func (t *Tensor) Div(other interface{}) *Tensor {
+	return t.ops(other, "/")
+}
+
 // Fill fills the tensor with the given value.
 func (t *Tensor) Fill(value float64) {
 	for i := range t.Data {
