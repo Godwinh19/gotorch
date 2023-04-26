@@ -23,6 +23,15 @@ func (t *Tensor) Size() int {
 	return Prod(t.Dim)
 }
 
+func NewTensor(dim []int) *Tensor {
+	stride := Stride(dim)
+	return &Tensor{
+		Dim:    dim,
+		Stride: stride,
+		Data:   make([]float64, Prod(dim)),
+	}
+}
+
 func (t *Tensor) Set(index []int, val float64) {
 	idx := t.Index(index)
 	t.Data[idx] = val

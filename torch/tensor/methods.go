@@ -2,6 +2,7 @@ package tensor
 
 import (
 	"errors"
+	"fmt"
 )
 
 func (t *Tensor) Transpose() *Tensor {
@@ -18,37 +19,58 @@ func (t *Tensor) Transpose() *Tensor {
 }
 
 func (t *Tensor) Reshape(dim []int) (*Tensor, error) {
-	if len(dim) != len(t.Dim) {
+	// Compute the total number of elements in the new shape
+	if Prod(dim) != Prod(t.Dim) {
 		return nil, errors.New("Dimension mismatch")
 	}
-	newStride := make([]int, len(t.Stride))
+
+	// Compute the new stride values
+	newStride := make([]int, len(dim))
 	curStride := 1
-	for i := len(t.Dim) - 1; i >= 0; i-- {
-		if dim[i] != -1 && dim[i] != t.Dim[i] {
-			return nil, errors.New("Dimension mismatch")
-		}
-		if dim[i] == -1 {
-			dim[i] = t.Dim[i]
-		}
+	for i := len(dim) - 1; i >= 0; i-- {
 		newStride[i] = curStride
 		curStride *= dim[i]
 	}
+
+	// Check if the new stride values are valid
 	if curStride != len(t.Data) {
 		return nil, errors.New("Dimension mismatch")
 	}
+
+	// Create the new tensor with the updated shape and stride
 	return &Tensor{Dim: dim, Stride: newStride, Data: t.Data, RequiredGrad: t.RequiredGrad}, nil
 }
 
-func NewTensor(dim []int) *Tensor {
-	size := 1
-	stride := make([]int, len(dim))
-	for i := len(dim) - 1; i >= 0; i-- {
-		stride[i] = size
-		size *= dim[i]
+func (t *Tensor) GetStride() []int {
+	return Stride(t.Dim)
+}
+
+func (t *Tensor) Print() {
+	fmt.Print("tensor(")
+	if len(t.Dim) == 0 {
+		fmt.Println("[]")
+		return
 	}
-	return &Tensor{
-		Dim:    dim,
-		Stride: stride,
-		Data:   make([]float64, size),
+	printHelper(t.Data, t.Dim, t.Stride, 0, make([]int, len(t.Dim)))
+	fmt.Printf("Shape: %v and Stride: %v )\n", t.Dim, t.Stride)
+}
+
+func printHelper(data []float64, dim []int, stride []int, offset int, indices []int) {
+	if len(dim) == 1 {
+		fmt.Print("[ ")
+		for i := 0; i < dim[0]; i++ {
+			fmt.Printf("%v", data[offset+i*stride[0]])
+			if i != dim[0]-1 {
+				fmt.Print(",")
+			}
+		}
+		fmt.Println("],")
+		return
 	}
+	fmt.Print("[")
+	for i := 0; i < dim[0]; i++ {
+		indices[0] = i
+		printHelper(data, dim[1:], stride[1:], offset+i*stride[0], indices[1:])
+	}
+	fmt.Println("]")
 }

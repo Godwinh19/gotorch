@@ -43,6 +43,16 @@ func IsIntArrayEqual(a, b []int) bool {
 	return true
 }
 
+func Stride(dim []int) []int {
+	size := 1
+	stride := make([]int, len(dim))
+	for i := len(dim) - 1; i >= 0; i-- {
+		stride[i] = size
+		size *= dim[i]
+	}
+	return stride
+}
+
 func Convert(val interface{}, typ reflect.Type) (interface{}, error) {
 	// Get the value's current type
 	valType := reflect.TypeOf(val)
