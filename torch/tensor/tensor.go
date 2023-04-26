@@ -60,7 +60,7 @@ func (t *Tensor) ops(other interface{}, op string) *Tensor {
 	case Tensor:
 		return TensorOpsTensor(*t, other.(Tensor), op)
 	case *Tensor:
-		return TensorOpsTensor(*t, other.(Tensor), op)
+		return TensorOpsTensor(*t, *other.(*Tensor), op)
 	default:
 		panic("Type error")
 	}
