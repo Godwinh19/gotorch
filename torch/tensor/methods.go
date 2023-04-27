@@ -25,6 +25,7 @@ func (t *Tensor) Reshape(dim []int) (*Tensor, error) {
 	}
 
 	// Compute the new stride values
+	// use of Stride helper instead
 	newStride := make([]int, len(dim))
 	curStride := 1
 	for i := len(dim) - 1; i >= 0; i-- {

@@ -76,6 +76,10 @@ func main() {
 
 ```
 
+## Documentation:
+
+- [Tensor](./docs/tensor.md)
+
 ## Contributions
 
 Your contributions are very welcome !
